@@ -1,3 +1,35 @@
-<p>
-  post-create works!
-</p>
+<div class="form-container">
+  <form #postForm="ngForm" (ngSubmit)="onCreatePost(postForm)">
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Название поста">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Введите свое имя">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Добавьте теги">
+      <button mat-button>Добавить тег</button>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Название поста">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Название поста">
+    </mat-form-field>
+  </form>
+
+</div>
