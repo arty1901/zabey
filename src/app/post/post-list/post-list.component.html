@@ -1,7 +1,29 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>
+<div class="container post-list-container">
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let post of posts">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ post.postTitle }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ post.postAuthor }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 
-    </mat-card-title>
-  </mat-card-header>
-</mat-card>
+      <div class="container">
+        <mat-chip-list>
+          <mat-chip *ngFor="let tag of post.postTags">
+            {{ tag.name }}
+          </mat-chip>
+        </mat-chip-list>
+        <p class="post-text">{{ post.postText }}</p>
+        <p>Дата создания: {{ post.postDate | date }}</p>
+      </div>
+      <mat-action-row>
+        <a mat-raised-button color="accent" [routerLink]="['/edit', post.postId]">Edit</a>
+        <button mat-raised-button color="warn">Delete</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+

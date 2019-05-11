@@ -16,7 +16,9 @@ import {
   MatToolbarModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
-  MatPaginatorModule } from '@angular/material';
+  MatPaginatorModule,
+  MatChipsModule,
+  MatIconModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import {
     MatToolbarModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatChipsModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
