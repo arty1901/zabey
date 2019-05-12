@@ -1,10 +1,10 @@
-import { FormGroup, ValidationErrors } from '@angular/forms';
+import {AbstractControl, ValidatorFn} from '@angular/forms';
 
-export class ChipsValidation {
+export function ChipsValidation(): ValidatorFn {
 
-  static validateRequired(c: FormGroup): ValidationErrors | null {
+  return (control: AbstractControl): {[key: string]: string} | null => {
+    const tags = control.value;
 
-    const tags = c.get('postTags');
-    return !tags ? { required: true } : null;
-  }
+    return null;
+  };
 }

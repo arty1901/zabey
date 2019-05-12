@@ -6,3 +6,7 @@
   margin: 15px 0;
   text-align: justify;
 }
+
+mat-spinner {
+  margin: 0 auto;
+}

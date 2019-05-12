@@ -2,7 +2,11 @@ export interface PostModel {
   postId: string;
   postTitle: string;
   postAuthor: string;
-  postTags: string[];
+  postTags: ChipModel[];
   postText: string;
   postDate: Date;
+}
+
+export interface ChipModel {
+  name: string;
 }

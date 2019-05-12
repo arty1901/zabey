@@ -1,12 +1,13 @@
 <div class="container">
-  <form (ngSubmit)="onCreatePost()" [formGroup]="form">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (ngSubmit)="onCreatePost()" [formGroup]="form" *ngIf="!isLoading">
     <mat-form-field>
       <input type="text"
              matInput
              name="postTitle"
              placeholder="Название поста"
              formControlName="postTitle">
-        <mat-error *ngIf="postTitle.invalid && (postTitle.dirty || postTitle.touched) && postTitle.invalid">{{ getPostTitleError() }}</mat-error>
+        <mat-error *ngIf="postTitle.invalid && (postTitle.dirty || postTitle.touched)">{{ getPostTitleError() }}</mat-error>
     </mat-form-field>
 
     <mat-form-field>
@@ -15,11 +16,11 @@
              name="postAuthor"
              placeholder="Ваше имя"
              formControlName="postAuthor">
-      <mat-error *ngIf="postAuthor.invalid && (postAuthor.dirty || postAuthor.touched) && postAuthor.invalid">{{ getPostAuthorError() }}</mat-error>
+      <mat-error *ngIf="postAuthor.invalid && (postAuthor.dirty || postAuthor.touched)">{{ getPostAuthorError() }}</mat-error>
     </mat-form-field>
 
     <mat-form-field class="example-chip-list">
-      <mat-chip-list #chipList formControlName="postTags">
+      <mat-chip-list #chipList>
         <mat-chip *ngFor="let tag of tagsList" [selectable]="selectable"
                   [removable]="removable" (removed)="remove(tag)">
           {{tag.name}}
@@ -31,7 +32,7 @@
                [matChipInputAddOnBlur]="addOnBlur"
                (matChipInputTokenEnd)="add($event)">
       </mat-chip-list>
-      <mat-error *ngIf="postTags.invalid && (postTags.dirty || postTags.touched) && (tagsList.length === 0) && postTags.invalid">{{ getPostTagsError() }}</mat-error>
+      <mat-error *ngIf="tagsList.length === 0">Нужно пометить твою историю</mat-error>
     </mat-form-field>
 
     <mat-form-field>
@@ -40,10 +41,13 @@
                 placeholder="Напишите свою историю"
                 formControlName="postText"
                 rows="10"></textarea>
-      <mat-error *ngIf="postText.invalid && (postText.dirty || postText.touched) && postText.invalid">{{ getPostTextError() }}</mat-error>
+      <mat-error *ngIf="postText.invalid && (postText.dirty || postText.touched)">{{ getPostTextError() }}</mat-error>
     </mat-form-field>
 
-    <button type="submit" mat-raised-button color="primary">Отрпавить историю</button>
+    <button type="submit" mat-raised-button color="primary"
+            [disabled]="form.invalid && (tagsList.length === 0)">
+      Отрпавить историю
+    </button>
   </form>
 
 </div>

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material';
-import {ChipsValidation} from '../ChipsValidation';
 import {PostService} from '../../services/post.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {PostModel} from '../../models/post.model';
+import {ChipModel, PostModel} from '../../models/post.model';
+import {ChipsValidation} from '../ChipsValidation';
 
 @Component({
   selector: 'app-post-create',
@@ -21,9 +21,10 @@ export class PostCreateComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagsList = [];
+  tagsList: ChipModel[] = [];
   form: FormGroup;
   post: PostModel;
+  isLoading = false;
 
   constructor(private postService: PostService,
               private route: ActivatedRoute) { }
@@ -33,7 +34,6 @@ export class PostCreateComponent implements OnInit {
     this.form = new FormGroup({
       postTitle: new FormControl('', { validators: [Validators.required, Validators.minLength(4)] }),
       postAuthor: new FormControl('', { validators: [Validators.required] }),
-      postTags: new FormControl(this.tagsList, { validators: [ChipsValidation.validateRequired] }),
       postText: new FormControl('', { validators: [Validators.required] }),
     });
 
@@ -43,11 +43,11 @@ export class PostCreateComponent implements OnInit {
 
         this.mode = 'edit';
         this.postId = paramMap.get('id');
+        this.isLoading = true;
 
         this.postService.getPost(this.postId)
           .subscribe((post) => {
-            console.log(post);
-            // Fetched post by id
+            // Fetched post with specified id
             this.post = {
               postId: post._id,
               postTitle: post.postTitle,
@@ -61,13 +61,17 @@ export class PostCreateComponent implements OnInit {
             this.form.setValue({
               postTitle: this.post.postTitle,
               postAuthor: this.post.postAuthor,
-              postTags: this.post.postTags,
               postText: this.post.postText
             });
+
+            this.tagsList = this.post.postTags;
+
+            this.isLoading = false;
           });
       } else {
 
         this.mode = 'create';
+        this.tagsList = [];
         this.form.reset();
       }
     });
@@ -75,7 +79,6 @@ export class PostCreateComponent implements OnInit {
 
   get postTitle() { return this.form.get('postTitle'); }
   get postAuthor() { return this.form.get('postAuthor'); }
-  get postTags() { return this.form.get('postTags'); }
   get postText() { return this.form.get('postText'); }
 
   getPostTitleError() {
@@ -92,17 +95,13 @@ export class PostCreateComponent implements OnInit {
     return this.postText.hasError('required') ? 'О чем твоя история?' : '';
   }
 
-  getPostTagsError() {
-    return this.postTags.hasError('required') ? 'Нужно пометить твою историю' : '';
-  }
-
   onCreatePost() {
+    this.isLoading = true;
     if (this.mode === 'create') {
-      this.postService.addPost(this.postTitle.value, this.postAuthor.value, this.postTags.value, this.postText.value);
+      this.postService.addPost(this.postTitle.value, this.postAuthor.value, this.tagsList, this.postText.value);
     } else {
-
+      this.postService.updatePost(this.post.postId, this.postTitle.value, this.postAuthor.value, this.tagsList, this.postText.value);
     }
-    this.form.reset();
   }
 
   add(event: MatChipInputEvent): void {

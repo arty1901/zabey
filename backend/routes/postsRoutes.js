@@ -3,6 +3,7 @@ const Post = require('../models/post');
 
 const router = express.Router();
 
+// Fetch all posts
 router.get('', (req, res, next) => {
   const postQuery = Post.find();
   postQuery
@@ -14,8 +15,8 @@ router.get('', (req, res, next) => {
     });
 });
 
+// Get post with specified ID
 router.get('/:id', (req, res, next) => {
-  console.log(req.params.id);
   Post.findById(req.params.id).then(post => {
     if (post) {
       res.status(200).json(post);
@@ -25,8 +26,8 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
+// Add a new post to DB
 router.post('', (req, res, next) => {
-  console.log(req.body);
   const post = new Post({
     postTitle: req.body.postTitle,
     postAuthor: req.body.postAuthor,
@@ -46,6 +47,28 @@ router.post('', (req, res, next) => {
         // }
       });
     })
+});
+
+// Edit post
+router.put('/:id', (req, res, next) => {
+  const post = {
+    _id: req.params.id,
+    postTitle: req.body.postTitle,
+    postAuthor: req.body.postAuthor,
+    postTags: req.body.postTags,
+    postText: req.body.postText,
+    postDate: req.body.postDate,
+  };
+  Post.updateOne({_id: req.params.id}, post)
+    .then(() => {
+      res.status(200).json({message: 'post has been updated'})
+    });
+});
+
+router.delete('/:id', (req, res, next) => {
+  Post.deleteOne({_id: req.params.id}).then(
+    res.status(200).json({message: 'post deleted'})
+  );
 });
 
 module.exports = router;
