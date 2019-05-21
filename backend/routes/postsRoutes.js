@@ -5,12 +5,30 @@ const router = express.Router();
 
 // Fetch all posts
 router.get('', (req, res, next) => {
+
+  // Store query params
+  console.log(req.query);
+  const pageSize = +req.query.pageSize;
+  const currentPage = +req.query.page;
   const postQuery = Post.find();
+  let fetchedPosts;
+
+  if (pageSize && currentPage) {
+    postQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+
   postQuery
-    .then(posts => {
+    .then((posts) => {
+      fetchedPosts = posts;
+      console.log(fetchedPosts);
+      return Post.countDocuments();
+    })
+    .then(countPost => {
       res.status(200).json({
-        message: 'all ok',
-        posts: posts
+        posts: fetchedPosts,
+        maxPosts: countPost
       })
     });
 });

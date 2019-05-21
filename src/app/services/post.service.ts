@@ -10,14 +10,16 @@ import {map} from 'rxjs/operators';
 })
 export class PostService {
 
-  postChanged = new Subject<PostModel[]>();
-  private posts: PostModel[] = [];
+  postChanged = new Subject<{posts: PostModel[], postCount: number}>();
+  private posts: PostModel[];
   constructor(private http: HttpClient,
               private router: Router) {
   }
 
-  getPosts() {
-    return this.http.get<{ message: string, posts: any }>('http://localhost:4000/api/posts/')
+  getPosts(pageSize: number, currentPage: number) {
+    const queryParam = `?pageSize=${pageSize}&page=${currentPage}`;
+
+    return this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:4000/api/posts/' + queryParam)
       .pipe(
         map(postData => {
           return {
@@ -30,14 +32,19 @@ export class PostService {
                 postText: post.postText,
                 postDate: post.postDate
               };
-            })
+            }),
+            maxPosts: postData.maxPosts
           };
         })
       )
       .subscribe(
         (response) => {
           this.posts = response.posts;
-          this.postChanged.next([...this.posts]);
+          console.log(response.posts);
+          this.postChanged.next({
+            posts: [...this.posts],
+            postCount: response.maxPosts
+          });
         }
       );
   }

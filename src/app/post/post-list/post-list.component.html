@@ -26,5 +26,11 @@
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
+
+  <mat-paginator [length]="totalPosts"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOption"
+                 (page)="onChangePage($event)">
+  </mat-paginator>
 </div>
 
