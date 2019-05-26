@@ -1,0 +1,83 @@
+<div class="container">
+
+  <mat-card>
+
+    <mat-card-title>
+      Создайте себя Здесь!
+    </mat-card-title>
+
+    <form (ngSubmit)="onSingup()" [formGroup]="form" novalidate>
+
+      <mat-form-field>
+
+        <input type="text"
+               id="email"
+               name="email"
+               matInput
+               placeholder="Введите email"
+               formControlName="email"
+               required
+        >
+
+        <mat-error *ngFor="let validation of accountValidationMessages.email">
+          <mat-error *ngIf="form.get('email').hasError(validation.type) && (form.get('email').dirty || form.get('email').touched)">
+            {{validation.message}}
+          </mat-error>
+        </mat-error>
+
+      </mat-form-field>
+
+<!--  Passwords validation group    -->
+      <div formGroupName="passwords">
+
+        <mat-form-field>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 matInput
+                 placeholder="Введите пароль"
+                 formControlName="password"
+                 required
+          >
+
+          <mat-error *ngFor="let validation of accountValidationMessages.password">
+            <mat-error
+              *ngIf="form.get('passwords.password').hasError(validation.type) && (form.get('passwords.password').dirty || form.get('passwords.password').touched)">
+              {{validation.message}}
+            </mat-error>
+          </mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field>
+          <input type="password"
+                 id="passwordConfirm"
+                 name="passwordConfirm"
+                 matInput
+                 placeholder="Подтвердите пароль"
+                 formControlName="passwordConfirm"
+                 required
+                 [errorStateMatcher]="parentErrorStateMatcher"
+          >
+
+          <mat-error *ngFor="let validation of accountValidationMessages.passwordConfirm">
+            <mat-error
+              *ngIf="(form.get('passwords.passwordConfirm').hasError(validation.type) || form.get('passwords').hasError(validation.type))
+                  && (form.get('passwords.passwordConfirm').dirty || form.get('passwords.passwordConfirm').touched)">
+              {{validation.message}}
+            </mat-error>
+
+          </mat-error>
+
+        </mat-form-field>
+
+      </div>
+<!--      Passwords validation group-->
+
+      <button type="submit" mat-raised-button color="primary" [disabled]="!form.valid">
+        Войти
+      </button>
+    </form>
+  </mat-card>
+
+</div>

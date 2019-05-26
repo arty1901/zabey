@@ -19,13 +19,17 @@ import {
   MatPaginatorModule,
   MatChipsModule,
   MatIconModule} from '@angular/material';
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PostListComponent,
     PostCreateComponent,
-    HeaderComponent
+    HeaderComponent,
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     FormsModule,
