@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {mustMatch, ParentErrorStateMatcher} from '../must-match.validator';
-import {ErrorStateMatcher} from '@angular/material';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ParentErrorStateMatcher, PasswordValidator} from '../must-match.validator';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,9 +11,7 @@ import {ErrorStateMatcher} from '@angular/material';
 export class SignupComponent implements OnInit {
 
   form: FormGroup;
-
   matchingPasswordGroup: FormGroup;
-  submitted = false;
   parentErrorStateMatcher = new ParentErrorStateMatcher();
 
   accountValidationMessages = {
@@ -32,7 +30,8 @@ export class SignupComponent implements OnInit {
     ]
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -48,7 +47,9 @@ export class SignupComponent implements OnInit {
         Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$')
       ])),
       passwordConfirm: new FormControl('', Validators.required)
-    }, mustMatch);
+    }, (formGroup: FormGroup) => {
+      return PasswordValidator.areEqual(formGroup);
+    });
 
     // Creation of signUp form
     this.form = this.fb.group({
@@ -62,10 +63,11 @@ export class SignupComponent implements OnInit {
     });
   }
 
+  get Email() { return this.form.get('email'); }
+  get Password() { return this.form.get('passwords.password'); }
+
   onSingup() {
-    this.submitted = true;
-    console.log(this.form);
-    console.log(this.form.get('passwords').errors);
+    this.authService.signup(this.Email.value, this.Password.value);
   }
 
 }

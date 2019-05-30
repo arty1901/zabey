@@ -2,13 +2,16 @@
   <span><a routerLink="/">Главная</a></span>
   <span class="spacer"></span>
   <ul>
-    <li>
+    <li *ngIf="isAuth">
       <a routerLink="/create" mat-button routerLinkActive="mat-accent">Новый пост</a>
     </li>
-    <li>
+    <li *ngIf="isAuth">
+      <button (click)="onLogout()" mat-button routerLinkActive="mat-accent">Выйти</button>
+    </li>
+    <li *ngIf="!isAuth">
       <a routerLink="/login" mat-button routerLinkActive="mat-accent">Зайти</a>
     </li>
-    <li>
+    <li *ngIf="!isAuth">
       <a routerLink="/signup" mat-button routerLinkActive="mat-accent">Создать себя</a>
     </li>
   </ul>

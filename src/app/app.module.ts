@@ -21,6 +21,7 @@ import {
   MatIconModule} from '@angular/material';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { UserComponent } from './account/user/user.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { SignupComponent } from './auth/signup/signup.component';
     PostCreateComponent,
     HeaderComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    UserComponent
   ],
   imports: [
     FormsModule,

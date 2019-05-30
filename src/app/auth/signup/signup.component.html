@@ -42,7 +42,8 @@
 
           <mat-error *ngFor="let validation of accountValidationMessages.password">
             <mat-error
-              *ngIf="form.get('passwords.password').hasError(validation.type) && (form.get('passwords.password').dirty || form.get('passwords.password').touched)">
+              *ngIf="form.get('passwords.password').hasError(validation.type) &&
+                    (form.get('passwords.password').dirty || form.get('passwords.password').touched)">
               {{validation.message}}
             </mat-error>
           </mat-error>
@@ -61,12 +62,10 @@
           >
 
           <mat-error *ngFor="let validation of accountValidationMessages.passwordConfirm">
-            <mat-error
-              *ngIf="(form.get('passwords.passwordConfirm').hasError(validation.type) || form.get('passwords').hasError(validation.type))
+            <mat-error *ngIf="(form.get('passwords.passwordConfirm').hasError(validation.type) || form.get('passwords').hasError(validation.type))
                   && (form.get('passwords.passwordConfirm').dirty || form.get('passwords.passwordConfirm').touched)">
               {{validation.message}}
             </mat-error>
-
           </mat-error>
 
         </mat-form-field>
@@ -74,8 +73,8 @@
       </div>
 <!--      Passwords validation group-->
 
-      <button type="submit" mat-raised-button color="primary" [disabled]="!form.valid">
-        Войти
+      <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
+        Создать себя
       </button>
     </form>
   </mat-card>

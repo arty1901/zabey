@@ -10,3 +10,7 @@
 mat-spinner {
   margin: 0 auto;
 }
+
+mat-paginator {
+  margin-top: 15px;
+}

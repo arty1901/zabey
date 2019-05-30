@@ -5,6 +5,7 @@ export interface PostModel {
   postTags: ChipModel[];
   postText: string;
   postDate: Date;
+  creator: string;
 }
 
 export interface ChipModel {

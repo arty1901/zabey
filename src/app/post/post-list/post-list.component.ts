@@ -3,6 +3,7 @@ import {PostService} from '../../services/post.service';
 import {PostModel} from '../../models/post.model';
 import { Subscription } from 'rxjs';
 import {PageEvent} from '@angular/material';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -20,7 +21,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   pageSizeOption = [5, 10, 25, 100];
 
 
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService,
+              private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoading = true;

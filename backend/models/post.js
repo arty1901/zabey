@@ -7,7 +7,8 @@ const postSchema = mongoose.Schema({
   postAuthor: {type: String, required: true},
   postTags: {type: Array, required: true, lowercase: true},
   postText: {type: String, required: true},
-  postDate: {type: Date, required: true}
+  postDate: {type: Date, required: true},
+  postCreator: {type: String, required: true}
 });
 
 // Экспортируем ее для доступа изнве

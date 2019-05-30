@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 // Import external routes
 const postsRoutes = require('./routes/postsRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -37,6 +38,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/posts', postsRoutes);
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 module.exports = app;
