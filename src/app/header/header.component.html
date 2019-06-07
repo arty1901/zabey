@@ -2,16 +2,23 @@
   <span><a routerLink="/">Главная</a></span>
   <span class="spacer"></span>
   <ul>
-    <li *ngIf="isAuth">
-      <a routerLink="/create" mat-button routerLinkActive="mat-accent">Новый пост</a>
+    <li *ngIf="user.isAuth">
+
+      <button mat-button [matMenuTriggerFor]="userMenu">{{user.username}}</button>
+
+      <mat-menu #userMenu="matMenu" xPosition="before">
+        <button routerLink="/account" mat-menu-item>Профиль</button>
+        <button routerLink="/create" mat-menu-item>Новый пост</button>
+        <button (click)="onLogout()" mat-menu-item>Выйти</button>
+      </mat-menu>
+
     </li>
-    <li *ngIf="isAuth">
-      <button (click)="onLogout()" mat-button routerLinkActive="mat-accent">Выйти</button>
-    </li>
-    <li *ngIf="!isAuth">
+
+    <li *ngIf="!user.isAuth">
       <a routerLink="/login" mat-button routerLinkActive="mat-accent">Зайти</a>
     </li>
-    <li *ngIf="!isAuth">
+
+    <li *ngIf="!user.isAuth">
       <a routerLink="/signup" mat-button routerLinkActive="mat-accent">Создать себя</a>
     </li>
   </ul>

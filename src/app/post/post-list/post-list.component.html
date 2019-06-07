@@ -1,6 +1,6 @@
 <div class="container post-list-container">
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <mat-accordion *ngIf="!isLoading">
+  <mat-accordion *ngIf="!isLoading  && posts.length > 0">
     <mat-expansion-panel *ngFor="let post of posts">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -20,12 +20,14 @@
         <p class="post-text">{{ post.postText }}</p>
         <p>Дата создания: {{ post.postDate | date }}</p>
       </div>
-      <mat-action-row>
+      <mat-action-row *ngIf="isAuth && post.postCreator === userId">
         <a mat-raised-button color="accent" [routerLink]="['/edit', post.postId]">Edit</a>
         <button mat-raised-button color="warn" (click)="onDeletePost(post.postId)">Delete</button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
+
+  <h2 *ngIf="posts.length === 0" class="text-center">пока нет историй :(</h2>
 
   <mat-paginator [length]="totalPosts"
                  [pageSize]="pageSize"
@@ -33,4 +35,3 @@
                  (page)="onChangePage($event)">
   </mat-paginator>
 </div>
-

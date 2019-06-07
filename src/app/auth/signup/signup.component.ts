@@ -19,6 +19,9 @@ export class SignupComponent implements OnInit {
       {type: 'required', message: 'Email is required'},
       {type: 'pattern', message: 'Enter a valid email'}
     ],
+    username: [
+      {type: 'required', message: 'Username is required'}
+    ],
     passwordConfirm: [
       {type: 'required', message: 'Confirm password is required'},
       {type: 'areEqual', message: 'Password mismatch'}
@@ -58,16 +61,17 @@ export class SignupComponent implements OnInit {
         Validators.email,
         Validators.required
       ])],
-
+      username: ['', [Validators.required]],
       passwords: this.matchingPasswordGroup
     });
   }
 
   get Email() { return this.form.get('email'); }
   get Password() { return this.form.get('passwords.password'); }
+  get Username() { return this.form.get('username'); }
 
   onSingup() {
-    this.authService.signup(this.Email.value, this.Password.value);
+    this.authService.signup(this.Email.value, this.Username.value, this.Password.value);
   }
 
 }

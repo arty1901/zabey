@@ -1,5 +1,6 @@
 const express = require('express');
 const Post = require('../models/post');
+const authCheck = require('../middleware/checkAuth');
 
 const router = express.Router();
 
@@ -7,7 +8,6 @@ const router = express.Router();
 router.get('', (req, res, next) => {
 
   // Store query params
-  console.log(req.query);
   const pageSize = +req.query.pageSize;
   const currentPage = +req.query.page;
   const postQuery = Post.find();
@@ -22,6 +22,7 @@ router.get('', (req, res, next) => {
   postQuery
     .then((posts) => {
       fetchedPosts = posts;
+
       return Post.countDocuments();
     })
     .then(countPost => {
@@ -44,30 +45,23 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Add a new post to DB
-router.post('', (req, res, next) => {
+router.post('', authCheck,(req, res, next) => {
+
   const post = new Post({
     postTitle: req.body.postTitle,
     postAuthor: req.body.postAuthor,
     postTags: req.body.postTags,
     postText: req.body.postText,
     postDate: req.body.postDate,
+    postCreator: req.userData.userId
   });
 
-  post
-    .save()
-    .then(createdPost => {
-      res.status(200).json({
-        message: 'Post created Successfuly',
-        // post: {
-        //   ...createdPost,
-        //   id: createdPost._id
-        // }
-      });
-    })
+  post.save()
+    .then(res.status(200).json(true));
 });
 
 // Edit post
-router.put('/:id', (req, res, next) => {
+router.put('/:id', authCheck, (req, res, next) => {
   const post = {
     _id: req.params.id,
     postTitle: req.body.postTitle,
@@ -82,7 +76,8 @@ router.put('/:id', (req, res, next) => {
     });
 });
 
-router.delete('/:id', (req, res, next) => {
+// Delete post
+router.delete('/:id', authCheck, (req, res, next) => {
   Post.deleteOne({_id: req.params.id}).then(
     res.status(200).json({message: 'post deleted'})
   );

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,10 +18,19 @@ import {
   MatProgressSpinnerModule,
   MatPaginatorModule,
   MatChipsModule,
-  MatIconModule} from '@angular/material';
+  MatIconModule,
+  MatMenuModule,
+  MatSidenavModule,
+  MatListModule,
+  MatDividerModule
+} from '@angular/material';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
-import { UserComponent } from './account/user/user.component';
+import { UserComponent } from './account/user.component';
+import {AuthInterceptor} from './auth/auth-interceptor';
+import { UserInfoComponent } from './account/user-info/user-info.component';
+import { UserPostsComponent } from './account/user-posts/user-posts.component';
+import { EditInfoComponent } from './account/edit-info/edit-info.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +40,10 @@ import { UserComponent } from './account/user/user.component';
     HeaderComponent,
     LoginComponent,
     SignupComponent,
-    UserComponent
+    UserComponent,
+    UserInfoComponent,
+    UserPostsComponent,
+    EditInfoComponent
   ],
   imports: [
     FormsModule,
@@ -48,9 +60,13 @@ import { UserComponent } from './account/user/user.component';
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MatChipsModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDividerModule
   ],
-  providers: [],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

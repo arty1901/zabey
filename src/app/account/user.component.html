@@ -1,0 +1,26 @@
+<div class="container">
+  <mat-drawer-container autosize>
+    <mat-drawer mode="side" opened>
+
+      <mat-list>
+        <mat-list-item>
+          <a mat-raised-button [routerLink]="['/account', 'info']" routerLinkActive="mat-accent">
+            User info
+          </a>
+        </mat-list-item>
+
+        <mat-list-item>
+          <a mat-raised-button [routerLink]="['/account', 'posts']" routerLinkActive="mat-accent">
+            User Posts
+          </a>
+        </mat-list-item>
+      </mat-list>
+
+    </mat-drawer>
+
+    <mat-drawer-content>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+
+  </mat-drawer-container>
+</div>

@@ -13,6 +13,7 @@ router.post('/signup', (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then( (hash) => {
     const user = new User({
       email: req.body.email,
+      username: req.body.username,
       password: hash
     });
     user.save()
@@ -67,8 +68,37 @@ router.post('/login', (req, res, next) => {
       res.status(200).json({
         userToken: token,
         expireIn: 3600,
-        userId: foundedUser._id
+        userId: foundedUser._id,
+        username: foundedUser.username,
+        email: foundedUser.email
       })
+    })
+});
+
+router.patch('/update', (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const decodeToken = jswb.decode(token);
+  const userId = decodeToken.userId;
+
+  let user;
+
+  if (req.body.password) {
+    user = {
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password
+    }
+  } else {
+    user = {
+      email: req.body.email,
+      username: req.body.username
+    }
+  }
+  User.updateOne({_id: userId}, user)
+    .then(() => {
+      res.status(200).json({
+        status: true
+      });
     })
 });
 

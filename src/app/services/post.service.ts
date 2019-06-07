@@ -30,7 +30,8 @@ export class PostService {
                 postAuthor: post.postAuthor,
                 postTags: post.postTags,
                 postText: post.postText,
-                postDate: post.postDate
+                postDate: post.postDate,
+                postCreator: post.postCreator
               };
             }),
             maxPosts: postData.maxPosts
@@ -40,7 +41,6 @@ export class PostService {
       .subscribe(
         (response) => {
           this.posts = response.posts;
-          console.log(response.posts);
           this.postChanged.next({
             posts: [...this.posts],
             postCount: response.maxPosts
@@ -69,6 +69,7 @@ export class PostService {
     const postDate = new Date();
     const post = { postTitle, postAuthor, postTags, postText, postDate };
 
+    // Данные об авторе поста будут переданы в хедаре, в токене авторизованного пользователя в auth-interception
     this.http.post<{message: string}>('http://localhost:4000/api/posts/', post)
       .subscribe(() => {
         this.router.navigate(['/']);

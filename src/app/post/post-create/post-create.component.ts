@@ -5,7 +5,7 @@ import {MatChipInputEvent} from '@angular/material';
 import {PostService} from '../../services/post.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ChipModel, PostModel} from '../../models/post.model';
-import {ChipsValidation} from '../ChipsValidation';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-post-create',
@@ -26,17 +26,27 @@ export class PostCreateComponent implements OnInit {
   post: PostModel;
   isLoading = false;
 
+  postValidationMessages = {
+    postTitle: [
+      {type: 'required', message: 'Post Title is required'}
+    ],
+    postText: [
+      {type: 'required', message: 'Post text is required'}
+    ]
+  };
+
   constructor(private postService: PostService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private authService: AuthService) { }
 
   ngOnInit() {
     // Form init
     this.form = new FormGroup({
       postTitle: new FormControl('', { validators: [Validators.required, Validators.minLength(4)] }),
-      postAuthor: new FormControl('', { validators: [Validators.required] }),
       postText: new FormControl('', { validators: [Validators.required] }),
     });
-
+    // в завимисомсти от запроса, если есть параметр id, то переходим в режим редактирования
+    // иначе режим создания
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
 
       if (paramMap.has('id')) {
@@ -54,13 +64,13 @@ export class PostCreateComponent implements OnInit {
               postAuthor: post.postAuthor,
               postTags: post.postTags,
               postText: post.postText,
-              postDate: null
+              postDate: null,
+              postCreator: null
             };
 
             // Preload a form with a fetched data
             this.form.setValue({
               postTitle: this.post.postTitle,
-              postAuthor: this.post.postAuthor,
               postText: this.post.postText
             });
 
@@ -78,29 +88,15 @@ export class PostCreateComponent implements OnInit {
   }
 
   get postTitle() { return this.form.get('postTitle'); }
-  get postAuthor() { return this.form.get('postAuthor'); }
   get postText() { return this.form.get('postText'); }
 
-  getPostTitleError() {
-    return this.postTitle.hasError('required') ? 'Нужно назвать твою историю' :
-      this.postTitle.hasError('minlength') ? 'Название не может быть короче 4 символов' :
-        '';
-  }
-
-  getPostAuthorError() {
-    return this.postAuthor.hasError('required') ? 'Тебе надо представиться' : '';
-  }
-
-  getPostTextError() {
-    return this.postText.hasError('required') ? 'О чем твоя история?' : '';
-  }
-
   onCreatePost() {
+    const postCreator = this.authService.getAuthUser().username;
     this.isLoading = true;
     if (this.mode === 'create') {
-      this.postService.addPost(this.postTitle.value, this.postAuthor.value, this.tagsList, this.postText.value);
+      this.postService.addPost(this.postTitle.value, postCreator, this.tagsList, this.postText.value);
     } else {
-      this.postService.updatePost(this.post.postId, this.postTitle.value, this.postAuthor.value, this.tagsList, this.postText.value);
+      this.postService.updatePost(this.post.postId, postCreator, this.postTitle.value, this.tagsList, this.postText.value);
     }
   }
 

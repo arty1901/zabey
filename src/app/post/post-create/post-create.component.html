@@ -1,22 +1,18 @@
 <div class="container">
   <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form (ngSubmit)="onCreatePost()" [formGroup]="form" *ngIf="!isLoading">
+
     <mat-form-field>
       <input type="text"
              matInput
              name="postTitle"
              placeholder="Название поста"
-             formControlName="postTitle">
-        <mat-error *ngIf="postTitle.invalid && (postTitle.dirty || postTitle.touched)">{{ getPostTitleError() }}</mat-error>
-    </mat-form-field>
+             formControlName="postTitle"
+             required>
 
-    <mat-form-field>
-      <input type="text"
-             matInput
-             name="postAuthor"
-             placeholder="Ваше имя"
-             formControlName="postAuthor">
-      <mat-error *ngIf="postAuthor.invalid && (postAuthor.dirty || postAuthor.touched)">{{ getPostAuthorError() }}</mat-error>
+      <mat-error *ngFor="let validation of postValidationMessages.postTitle">
+        <mat-error *ngIf="postTitle.hasError(validation.type) && (postTitle.dirty || postTitle.touched)">{{ validation.message }}</mat-error>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field class="example-chip-list">
@@ -40,13 +36,25 @@
                 name="postText"
                 placeholder="Напишите свою историю"
                 formControlName="postText"
-                rows="10"></textarea>
-      <mat-error *ngIf="postText.invalid && (postText.dirty || postText.touched)">{{ getPostTextError() }}</mat-error>
+                rows="10"
+                required></textarea>
+      <mat-error *ngFor="let validation of postValidationMessages.postText">
+        <mat-error *ngIf="postText.hasError(validation.type) && (postText.dirty || postText.touched)">
+          {{ validation.message }}
+        </mat-error>
+      </mat-error>
     </mat-form-field>
 
     <button type="submit" mat-raised-button color="primary"
-            [disabled]="form.invalid && (tagsList.length === 0)">
+
+            [disabled]="form.invalid || (tagsList.length === 0)">
       Отрпавить историю
+    </button>
+
+    <button routerLink="/"
+            mat-raised-button
+            color="warn">
+      На главную
     </button>
   </form>
 

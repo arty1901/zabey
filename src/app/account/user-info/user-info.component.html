@@ -1,0 +1,63 @@
+<div class="container">
+
+  <mat-card>
+    <mat-card-title>
+      <h3>{{currentUser.username}}</h3>
+    </mat-card-title>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+
+      <form action="" [formGroup]="form" (ngSubmit)="onUpdate()">
+
+        <mat-form-field>
+          <input type="text" matInput placeholder="Ваш email" formControlName="email" [value]="currentUser.email">
+
+          <mat-error *ngFor="let validation of accountValidationMessages.email">
+            <mat-error *ngIf="form.get('email').hasError(validation.type) && (form.get('email').dirty || form.get('email').touched)">
+              {{validation.message}}
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input type="text" matInput placeholder="Ваш позывной" formControlName="username" [value]="currentUser.username">
+
+          <mat-error *ngFor="let validation of accountValidationMessages.username">
+            <mat-error *ngIf="form.get('username').hasError(validation.type) && (form.get('username').dirty || form.get('username').touched)">
+              {{validation.message}}
+            </mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <div formGroupName="passwords">
+          <mat-form-field>
+            <input type="text" matInput placeholder="Новый пароль" formControlName="password">
+
+            <mat-error *ngFor="let validation of accountValidationMessages.password">
+              <mat-error *ngIf="form.get('passwords.password').hasError(validation.type) && (form.get('passwords.password').dirty || form.get('passwords.password').touched)">
+                {{validation.message}}
+              </mat-error>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input type="text" matInput placeholder="Подтвердите пароль" formControlName="passwordConfirm">
+
+            <mat-error *ngFor="let validation of accountValidationMessages.passwordConfirm">
+              <mat-error *ngIf="(form.get('passwords.passwordConfirm').hasError(validation.type) || form.get('passwords').hasError(validation.type)) &&
+                                (form.get('passwords.passwordConfirm').dirty || form.get('passwords.passwordConfirm').touched)">
+                {{validation.message}}
+              </mat-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <button type="submit" mat-raised-button color="primary">Обновить сведения</button>
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

@@ -1,0 +1,26 @@
+.container {
+  margin: 20px auto;
+}
+
+mat-drawer-container {
+  padding: 0;
+  min-height: 150px;
+  background-color: white;
+}
+
+mat-drawer {
+  width: 20%;
+  padding: 10px;
+}
+
+a {
+  text-decoration: none;
+  width: 100%;
+  font-size: 16px;
+}
+
+mat-drawer-content {
+  padding: 15px;
+  width: 80%;
+}
+

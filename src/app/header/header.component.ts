@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {Subscription} from 'rxjs';
+import {supportsYarn} from '@angular/cli/utilities/package-manager';
 
 @Component({
   selector: 'app-header',
@@ -10,15 +11,16 @@ import {Subscription} from 'rxjs';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   authSubs: Subscription;
-  isAuth = false;
+  user: any;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
-    this.isAuth = this.authService.getAuthStatus();
+    this.user = this.authService.getAuthUser();
+
     this.authSubs = this.authService.getAuthListner()
-      .subscribe(status => {
-        this.isAuth = status;
+      .subscribe(user => {
+        this.user = user;
       });
   }
 

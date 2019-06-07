@@ -27,6 +27,23 @@
 
       </mat-form-field>
 
+      <mat-form-field>
+        <input type="text"
+               id="username"
+               name="username"
+               matInput
+               placeholder="Введите ваш позывной"
+               formControlName="username"
+               required
+        >
+
+        <mat-error *ngFor="let validation of accountValidationMessages.username">
+          <mat-error *ngIf=" form.get('username').hasError(validation.type) && (form.get('username').dirty || form.get('username').touched) ">
+            {{validation.message}}
+          </mat-error>
+        </mat-error>
+      </mat-form-field>
+
 <!--  Passwords validation group    -->
       <div formGroupName="passwords">
 
