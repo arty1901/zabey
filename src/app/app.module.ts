@@ -31,6 +31,7 @@ import {AuthInterceptor} from './auth/auth-interceptor';
 import { UserInfoComponent } from './account/user-info/user-info.component';
 import { UserPostsComponent } from './account/user-posts/user-posts.component';
 import { EditInfoComponent } from './account/edit-info/edit-info.component';
+import { PostPageComponent } from './post/post-page/post-page.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { EditInfoComponent } from './account/edit-info/edit-info.component';
     UserComponent,
     UserInfoComponent,
     UserPostsComponent,
-    EditInfoComponent
+    EditInfoComponent,
+    PostPageComponent
   ],
   imports: [
     FormsModule,

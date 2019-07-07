@@ -1,0 +1,20 @@
+.comment {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+}
+
+.comment:last-child {
+  margin-bottom: 0;
+}
+
+.form-container {
+  width: 100%;
+}
+
+mat-divider {
+  margin: 15px 0;
+}
+
+.mat-form-field {
+  width: 60%;
+}

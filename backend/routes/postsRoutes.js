@@ -21,8 +21,8 @@ router.get('', (req, res, next) => {
 
   postQuery
     .then((posts) => {
-      fetchedPosts = posts;
 
+      fetchedPosts = posts;
       return Post.countDocuments();
     })
     .then(countPost => {
@@ -45,7 +45,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Add a new post to DB
-router.post('', authCheck,(req, res, next) => {
+router.post('', authCheck, (req, res, next) => {
 
   const post = new Post({
     postTitle: req.body.postTitle,
@@ -61,7 +61,7 @@ router.post('', authCheck,(req, res, next) => {
 });
 
 // Edit post
-router.put('/:id', authCheck, (req, res, next) => {
+router.put('edit/:id', authCheck, (req, res, next) => {
   const post = {
     _id: req.params.id,
     postTitle: req.body.postTitle,
@@ -81,6 +81,52 @@ router.delete('/:id', authCheck, (req, res, next) => {
   Post.deleteOne({_id: req.params.id}).then(
     res.status(200).json({message: 'post deleted'})
   );
+});
+
+// Add comment to the post
+router.post('/comment', (req, res, next) => {
+  const comment = {
+    author: req.body.author,
+    text: req.body.text
+  };
+
+  Post.findOne({_id: req.body.id})
+    .then(post => {
+      post.postComments.push(comment);
+      post.save()
+        .then(() => {
+          res.json('post updated');
+        })
+    });
+});
+
+// Add/Remove like
+router.put('/likePost', authCheck, (req, res, next) => {
+
+  const userId = req.userData.userId;
+  console.log(userId);
+  Post.findById(req.body.id)
+    .then(post => {
+
+      if (post.postLikedBy.includes(userId)) {
+
+        let arrayIndex = post.postLikedBy.indexOf(userId);
+
+        // Если пользователь найден, то лайк убираем
+        post.postLikeCounter--;
+        post.postLikedBy.splice(arrayIndex, 1);
+        post.save()
+          .then(res.status(200).json('like reduced'));
+      } else {
+
+        // Если пользователь не найден, то добавляем лайк
+        post.postLikeCounter++;
+        post.postLikedBy.push(userId);
+        post.save()
+          .then(res.status(200).json('like added'));
+      }
+
+    });
 });
 
 module.exports = router;

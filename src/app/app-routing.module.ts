@@ -8,13 +8,15 @@ import {AuthGuard} from './middleware/auth.guard';
 import {UserComponent} from './account/user.component';
 import {UserInfoComponent} from './account/user-info/user-info.component';
 import {UserPostsComponent} from './account/user-posts/user-posts.component';
+import {PostPageComponent} from './post/post-page/post-page.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/posts', pathMatch: 'full'},
   {path: 'posts', component: PostListComponent},
+  {path: 'post/:id', component: PostPageComponent},
   {path: 'create', component: PostCreateComponent, canActivate: [AuthGuard]},
   {path: 'edit/:id', component: PostCreateComponent, canActivate: [AuthGuard]},
-  {path: 'account', component: UserComponent, children: [
+  {path: 'account', component: UserComponent, canActivate: [AuthGuard], children: [
       {path: '', redirectTo: '/account/info', pathMatch: 'full'},
       {path: 'info', component: UserInfoComponent},
       {path: 'posts', component: UserPostsComponent},

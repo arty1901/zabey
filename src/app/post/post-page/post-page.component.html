@@ -1,0 +1,74 @@
+<div class="container" *ngIf="currentPost">
+  <div class="row">
+    <div class="col">
+      <h2>{{currentPost.postTitle}}</h2>
+      <span>{{currentPost.postAuthor}} | {{currentPost.postDate | date}}</span>
+    </div>
+  </div>
+
+  <mat-chip-list>
+    <mat-chip *ngFor="let tag of currentPost.postTags">
+      {{tag.name}}
+    </mat-chip>
+  </mat-chip-list>
+
+  <mat-divider></mat-divider>
+
+  <div class="row">
+    <div class="col">
+      <p>{{currentPost.postText}}</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <h4>Оставьте свою мысль</h4>
+
+  <div class="form-container">
+    <form [formGroup]="commentForm" (ngSubmit)="onCreateComment()">
+
+      <div class="form-group">
+        <mat-form-field>
+          <input type="text"
+                 matInput
+                 placeholder="Представьтесь"
+                 formControlName="author">
+
+          <mat-error *ngFor="let validation of commentValidationMessages.commentAuthor">
+            <mat-error *ngIf="commentAuthor.hasError(validation.type) && (commentAuthor.dirty || commentAuthor.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-group">
+        <mat-form-field>
+          <textarea type="text"
+                    matInput
+                    rows="6"
+                    placeholder="Напишите вашу мысль"
+                    formControlName="text"></textarea>
+
+          <mat-error *ngFor="let validation of commentValidationMessages.commentText">
+            <mat-error *ngIf="commentText.hasError(validation.type) && (commentText.dirty || commentText.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <button type="submit" mat-raised-button color="accent" [disabled]="commentForm.invalid">Оставить мысль</button>
+    </form>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <ng-container *ngIf="currentPost">
+    <h3>Комментарии: {{currentPost.postComments.length}}</h3>
+
+    <div *ngFor="let comment of currentPost.postComments" class=" comment border border-secondary rounded">
+      <h4>{{comment.author }}</h4>
+      <span>{{comment.date | date}}</span>
+      <p>{{comment.text}}</p>
+    </div>
+  </ng-container>
+
+</div>

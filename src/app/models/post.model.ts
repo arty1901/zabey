@@ -6,6 +6,9 @@ export interface PostModel {
   postText: string;
   postDate: Date;
   postCreator: string;
+  postLikeCounter: number;
+  postLikedBy: string[];
+  postComments: any[];
 }
 
 export interface ChipModel {

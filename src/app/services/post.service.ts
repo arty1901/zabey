@@ -11,7 +11,9 @@ import {map} from 'rxjs/operators';
 export class PostService {
 
   postChanged = new Subject<{posts: PostModel[], postCount: number}>();
+  postUpdate = new Subject<{post: PostModel}>();
   private posts: PostModel[];
+  private post: PostModel;
   constructor(private http: HttpClient,
               private router: Router) {
   }
@@ -31,7 +33,10 @@ export class PostService {
                 postTags: post.postTags,
                 postText: post.postText,
                 postDate: post.postDate,
-                postCreator: post.postCreator
+                postCreator: post.postCreator,
+                postLikeCounter: post.postLikeCounter,
+                postLikedBy: post.postLikedBy,
+                postComments: post.postComments
               };
             }),
             maxPosts: postData.maxPosts
@@ -50,19 +55,47 @@ export class PostService {
   }
 
   getPost(id: string) {
-    console.log(id);
     return this.http.get<{
       _id: string,
       postTitle: string,
       postAuthor: string,
       postTags: [],
       postText: string,
-      postDate: Date
-    }>('http://localhost:4000/api/posts/' + id);
+      postDate: Date,
+      postCreator: string,
+      postLikeCounter: number,
+      postLikedBy: string[],
+      postComments: []
+    }>('http://localhost:4000/api/posts/' + id)
+      .pipe(
+        map(post => {
+          return {
+            postId: post._id,
+            postTitle: post.postTitle,
+            postAuthor: post.postAuthor,
+            postTags: post.postTags,
+            postText: post.postText,
+            postDate: post.postDate,
+            postCreator: post.postCreator,
+            postLikeCounter: post.postLikeCounter,
+            postLikedBy: post.postLikedBy,
+            postComments: post.postComments
+          };
+        })
+      ).subscribe(post => {
+        this.post = post;
+        this.postUpdate.next({
+          post: this.post
+        });
+      });
   }
 
   getPostListner() {
     return this.postChanged.asObservable();
+  }
+
+  getPostUpdate() {
+    return this.postUpdate.asObservable();
   }
 
   addPost(postTitle: string, postAuthor: string, postTags: ChipModel[], postText: string) {
@@ -81,7 +114,7 @@ export class PostService {
     const postDate = new Date();
     const post = {postId, postTitle, postAuthor, postTags, postText, postDate};
 
-    this.http.put('http://localhost:4000/api/posts/' + id, post)
+    this.http.put('http://localhost:4000/api/posts/edit/' + id, post)
       .subscribe(() => {
         this.router.navigate(['/']);
       });
@@ -89,5 +122,16 @@ export class PostService {
 
   deletePost(id: string) {
     return this.http.delete('http://localhost:4000/api/posts/' + id);
+  }
+
+  addComment(id: string, author: string, text: string) {
+    const comment = {id, author, text};
+
+    return this.http.post('http://localhost:4000/api/posts/comment', comment);
+  }
+
+  likePost(id: string) {
+
+    return this.http.put('http://localhost:4000/api/posts/likePost', {id});
   }
 }

@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material';
 import {PostService} from '../../services/post.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ChipModel, PostModel} from '../../models/post.model';
 import {AuthService} from '../../services/auth.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
 
   private mode = 'create';
   private postId: string;
@@ -20,11 +21,12 @@ export class PostCreateComponent implements OnInit {
   selectable = true;
   removable = true;
   addOnBlur = true;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly separatorKeysCodes: number[] = [ENTER];
   tagsList: ChipModel[] = [];
   form: FormGroup;
   post: PostModel;
   isLoading = false;
+  postSubscription: Subscription;
 
   postValidationMessages = {
     postTitle: [
@@ -37,13 +39,14 @@ export class PostCreateComponent implements OnInit {
 
   constructor(private postService: PostService,
               private route: ActivatedRoute,
-              private authService: AuthService) { }
+              private authService: AuthService) {
+  }
 
   ngOnInit() {
     // Form init
     this.form = new FormGroup({
-      postTitle: new FormControl('', { validators: [Validators.required, Validators.minLength(4)] }),
-      postText: new FormControl('', { validators: [Validators.required] }),
+      postTitle: new FormControl('', {validators: [Validators.required, Validators.minLength(4)]}),
+      postText: new FormControl('', {validators: [Validators.required]}),
     });
     // в завимисомсти от запроса, если есть параметр id, то переходим в режим редактирования
     // иначе режим создания
@@ -55,18 +58,11 @@ export class PostCreateComponent implements OnInit {
         this.postId = paramMap.get('id');
         this.isLoading = true;
 
-        this.postService.getPost(this.postId)
-          .subscribe((post) => {
-            // Fetched post with specified id
-            this.post = {
-              postId: post._id,
-              postTitle: post.postTitle,
-              postAuthor: post.postAuthor,
-              postTags: post.postTags,
-              postText: post.postText,
-              postDate: null,
-              postCreator: null
-            };
+        this.postService.getPost(this.postId);
+
+        this.postSubscription = this.postService.getPostUpdate()
+          .subscribe(post => {
+            this.post = post.post;
 
             // Preload a form with a fetched data
             this.form.setValue({
@@ -87,8 +83,19 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  get postTitle() { return this.form.get('postTitle'); }
-  get postText() { return this.form.get('postText'); }
+  ngOnDestroy(): void {
+    if (this.postSubscription) {
+      this.postSubscription.unsubscribe();
+    }
+  }
+
+  get postTitle() {
+    return this.form.get('postTitle');
+  }
+
+  get postText() {
+    return this.form.get('postText');
+  }
 
   onCreatePost() {
     const postCreator = this.authService.getAuthUser().username;

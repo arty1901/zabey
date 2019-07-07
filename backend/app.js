@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 /**
- * Any request, wich targeting to the images
+ * Any request, witch targeting to the images
  * wil be allowed to continue and fetch their files from there
  */
 // app.use('/images', express.static(path.join('backend/images')))
@@ -39,5 +39,6 @@ app.use((req, res, next) => {
 
 app.use('/api/posts', postsRoutes);
 app.use('/api/auth', authRoutes);
+
 
 module.exports = app;

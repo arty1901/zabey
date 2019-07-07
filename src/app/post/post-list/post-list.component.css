@@ -14,3 +14,15 @@ mat-spinner {
 mat-paginator {
   margin-top: 15px;
 }
+
+mat-action-row .row .col > a,button {
+  margin-right: 10px;
+}
+
+mat-action-row .row {
+  width: 100%;
+}
+
+.likeColor {
+  color: red;
+}

@@ -7,8 +7,15 @@ const postSchema = mongoose.Schema({
   postAuthor: {type: String, required: true},
   postTags: {type: Array, required: true, lowercase: true},
   postText: {type: String, required: true},
-  postDate: {type: Date, required: true},
-  postCreator: {type: String, required: true}
+  postDate: {type: Date, required: false, default: Date.now},
+  postCreator: {type: String, required: true},
+  postLikeCounter: {type: Number, default: 0},
+  postLikedBy: {type: [String]},
+  postComments: [{
+    text: {type: String, required: true},
+    author: {type: String, required: true},
+    date: {type: Date, required: false, default: Date.now},
+  }]
 });
 
 // Экспортируем ее для доступа изнве

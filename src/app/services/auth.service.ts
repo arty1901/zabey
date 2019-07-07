@@ -1,5 +1,5 @@
-import { Router } from '@angular/router';
-import { Injectable } from '@angular/core';
+import {Router} from '@angular/router';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Subject} from 'rxjs';
 import {falseIfMissing} from 'protractor/built/util';
@@ -13,8 +13,6 @@ export class AuthService {
   private token: string;
   private userId: string;
   private tokenTimer: any;
-  private username: string;
-  private email: string;
   private authUser = {
     isAuth: false,
     username: '',
@@ -27,11 +25,12 @@ export class AuthService {
   }>();
 
   constructor(private http: HttpClient,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   login(email: string, password: string) {
 
-    const user = { email, password };
+    const user = {email, password};
 
     this.http.post<{
       message?: string,
@@ -80,15 +79,18 @@ export class AuthService {
   }
 
   signup(email: string, username: string, password: string) {
-    const newUser = { email, username, password };
+    const newUser = {email, username, password};
 
     this.http.post<{
       message?: string,
       result?: any
     }>('http://localhost:4000/api/auth/signup', newUser)
       .subscribe(result => {
-        this.router.navigate(['/']);
-      });
+          this.router.navigate(['/']);
+        },
+        error1 => {
+          console.log(error1);
+        });
   }
 
   logout() {
@@ -115,7 +117,7 @@ export class AuthService {
     password ? updatedUser = {email, username, password} :
       updatedUser = {email, username};
 
-    this.http.patch<{email: string, username: string}>('http://localhost:4000/api/auth/update', updatedUser)
+    this.http.patch<{ email: string, username: string }>('http://localhost:4000/api/auth/update', updatedUser)
       .subscribe((updatedInfo) => {
         console.log(updatedInfo);
       });

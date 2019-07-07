@@ -22,6 +22,11 @@ router.post('/signup', (req, res, next) => {
           message: 'user is added',
           result: result
         })
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err
+        })
       });
   })
 });

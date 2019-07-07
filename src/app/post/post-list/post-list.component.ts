@@ -24,7 +24,6 @@ export class PostListComponent implements OnInit, OnDestroy {
   userId: string;
   isAuth = false;
 
-
   constructor(private postService: PostService,
               private authService: AuthService) {
   }
@@ -69,5 +68,21 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this.postService.getPosts(this.currentPage, this.pageSize);
+  }
+
+  onLikePost(id: string) {
+    this.postService.likePost(id)
+      .subscribe(() => {
+        this.postService.getPosts(this.pageSize, this.currentPage);
+      });
+  }
+
+  isPostLiked(postId: string): string {
+
+    if (this.isAuth) {
+
+      let post = this.posts.find(postSearch => postSearch.postId === postId);
+      return post.postLikedBy.includes(this.userId) ? 'red' : 'black';
+    }
   }
 }
