@@ -1,0 +1,7 @@
+<mat-chip-list>
+  <mat-chip *ngFor="let tag of tagList">
+    <a [routerLink]="['/search', {request: tag.name, tagSearch: true}]" (click)="onTagSearch(tag.name)">
+      {{ tag.name }}
+    </a>
+  </mat-chip>
+</mat-chip-list>

@@ -47,7 +47,6 @@ router.post('/login', (req, res, next) => {
 
       // Store the founded user in external variable
       foundedUser = user;
-
       return bcrypt.compare(req.body.password, user.password);
     })
     .then(compareResult => {

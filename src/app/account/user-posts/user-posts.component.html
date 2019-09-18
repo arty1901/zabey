@@ -1,3 +1,23 @@
-<p>
-  user-posts works!
-</p>
+<div>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+
+  <ul *ngIf="!isLoading" class="list-group list-group-flush">
+    <a [routerLink]="['/post', post.postId]"
+       class="list-group-item list-group-item-action"
+       *ngFor="let post of posts">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{post.postTitle}}</h5>
+        <small>{{post.postDate | date}}</small>
+      </div>
+      <p class="mb-1">
+        {{post.postText.length > 100 ? post.postText.substring(0,50) + '...' : post.postText}}
+      </p>
+    </a>
+  </ul>
+
+  <mat-paginator [length]="totalPosts"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOption"
+                 (page)="onChangePage($event)">
+  </mat-paginator>
+</div>

@@ -1,0 +1,41 @@
+<div class="container">
+
+  <h3>Результаты поиска</h3>
+
+  <form class="search-form" [formGroup]="form" (ngSubmit)="onSearch()">
+    <mat-form-field>
+      <input type="text"
+             matInput
+             placeholder="Что хотите найти?"
+             formControlName="query">
+    </mat-form-field>
+
+    <mat-radio-group aria-label="Параметры поиска" formControlName="type">
+      <mat-radio-button value="tag">По тгеу</mat-radio-button>
+      <mat-radio-button value="request">По запросу</mat-radio-button>
+    </mat-radio-group>
+
+    <button mat-icon-button color="primary" type="submit">
+      <mat-icon>search</mat-icon>
+    </button>
+  </form>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+
+  <div *ngIf="!isLoading && data">
+    <ul class="list-group list-group-flush">
+      <a [routerLink]="['/post', post.id]" class="list-group-item list-group-item-action" *ngFor="let post of data">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{post.title}}</h5>
+          <small>{{post.data | date}}</small>
+        </div>
+        <p class="mb-1">{{post.text.length > 100 ? post.text.substring(0, 50) + '...' : post.postText}}</p>
+      </a>
+    </ul>
+
+    <mat-paginator [length]="totalPosts"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOption"
+                   (page)="onChangePage($event)">
+    </mat-paginator>
+  </div>
+</div>

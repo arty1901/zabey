@@ -10,6 +10,8 @@ import {ɵResourceLoaderImpl} from '@angular/platform-browser-dynamic';
 })
 export class AuthService {
 
+  // TODO: add error handler for auth
+
   private token: string;
   private userId: string;
   private tokenTimer: any;

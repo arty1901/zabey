@@ -4,7 +4,7 @@ import {PostService} from '../../services/post.service';
 import {Subscription} from 'rxjs';
 import {PostModel} from '../../models/post.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {response} from 'express';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-post-page',
@@ -15,9 +15,11 @@ export class PostPageComponent implements OnInit, OnDestroy {
 
   commentSubscription: Subscription;
 
-  isAuth = false;
+  author = '';
   currentPost: PostModel;
   commentForm: FormGroup;
+  isLoadingPost = true;
+  isLoadingComments = true;
 
   commentValidationMessages = {
     commentAuthor: [
@@ -30,12 +32,14 @@ export class PostPageComponent implements OnInit, OnDestroy {
 
   constructor(private route: ActivatedRoute,
               private postService: PostService,
+              private authService: AuthService,
               private fb: FormBuilder) {
   }
 
   ngOnInit() {
+    if (this.authService.getAuthUser().isAuth) { this.author = this.authService.getAuthUser().username; }
     this.commentForm = this.fb.group({
-      author: ['', [Validators.required]],
+      author: [this.author, [Validators.required]],
       text: ['', [Validators.required]]
     });
 
@@ -43,11 +47,14 @@ export class PostPageComponent implements OnInit, OnDestroy {
 
       this.postService.getPost(postId.get('id'));
 
-      this.commentSubscription = this.postService.getPostUpdate()
-        .subscribe(post => {
-          this.currentPost = post.post;
-        });
+      this.updateState();
+      this.isLoadingPost = false;
+      console.log(this.isLoadingPost);
     });
+
+    this.updateState();
+    this.isLoadingComments = false;
+    console.log(this.isLoadingComments);
   }
 
   get commentAuthor() {
@@ -58,6 +65,13 @@ export class PostPageComponent implements OnInit, OnDestroy {
     return this.commentForm.get('text');
   }
 
+  updateState(): void {
+    this.commentSubscription = this.postService.getPostUpdate()
+      .subscribe(post => {
+        this.currentPost = post.post;
+      });
+  }
+
   ngOnDestroy(): void {
     this.commentSubscription.unsubscribe();
   }
@@ -65,12 +79,12 @@ export class PostPageComponent implements OnInit, OnDestroy {
   onCreateComment(): void {
     const author = this.commentAuthor.value;
     const text = this.commentText.value;
+    this.isLoadingComments = true;
 
-    console.log(this.commentForm);
-    // this.postService.addComment(this.currentPost.postId, author, text)
-    //   .subscribe(() => {
-    //     this.postService.getPost(this.currentPost.postId);
-    // });
+    this.postService.addComment(this.currentPost.postId, author, text)
+      .subscribe(() => {
+        this.postService.getPost(this.currentPost.postId);
+    });
     this.commentForm.reset();
   }
 }

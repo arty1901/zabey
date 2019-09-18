@@ -11,12 +11,10 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class="container">
-        <mat-chip-list>
-          <mat-chip *ngFor="let tag of post.postTags">
-            {{ tag.name }}
-          </mat-chip>
-        </mat-chip-list>
+      <div>
+
+        <app-chip-list [tagList]="post.postTags"></app-chip-list>
+
         <p class="post-text">{{ post.postText }}</p>
         <div class="d-flex justify-content-between">
           <span>Комментариев: {{post.postComments.length }}</span>
@@ -27,7 +25,7 @@
       <mat-action-row>
         <div class="row">
           <div class="col">
-            <button *ngIf="isAuth && post.postCreator === userId"
+            <button *ngIf="isAuth && post.authorId === userId"
                     mat-button
                     (click)="onLikePost(post.postId)"
             [ngStyle]="{color: isPostLiked(post.postId)}">
@@ -36,8 +34,8 @@
           </div>
           <div class="col">
             <a [routerLink]="['/post', post.postId]" mat-raised-button color="primary">Читать дальше...</a>
-            <a *ngIf="isAuth && post.postCreator === userId" mat-raised-button color="accent" [routerLink]="['/edit', post.postId]">Редактировать</a>
-            <button *ngIf="isAuth && post.postCreator === userId" mat-raised-button color="warn" (click)="onDeletePost(post.postId)">Стереть</button>
+            <a *ngIf="isAuth && post.authorId === userId" mat-raised-button color="accent" [routerLink]="['/edit', post.postId]">Редактировать</a>
+            <button *ngIf="isAuth && post.authorId === userId" mat-raised-button color="warn" (click)="onDeletePost(post.postId)">Стереть</button>
           </div>
         </div>
       </mat-action-row>

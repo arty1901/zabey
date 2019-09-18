@@ -12,6 +12,8 @@ import {AuthService} from '../../services/auth.service';
 })
 export class PostListComponent implements OnInit, OnDestroy {
 
+  // TODO: finish the likes-system (make it works immediately without delay)
+
   posts: PostModel[] = [];
   postSubscription: Subscription;
   authSub: Subscription;
@@ -38,13 +40,16 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     this.postSubscription = this.postService.getPostListner()
       .subscribe(posts => {
+
         this.posts = posts.posts;
+        console.log(this.posts);
         this.totalPosts = posts.postCount;
         this.isLoading = false;
       });
 
     this.authSub = this.authService.getAuthListner()
       .subscribe(status => {
+
         this.userId = this.authService.getUserId();
         this.isAuth = status.isAuth;
       });
@@ -57,9 +62,13 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   onDeletePost(id: string) {
+    console.log(id);
+
+    this.isLoading = true;
     this.postService.deletePost(id)
       .subscribe(() => {
-        this.postService.getPosts(this.currentPage, this.pageSize);
+        console.log('deleted');
+        this.postService.getPosts(this.pageSize, this.currentPage);
       });
   }
 
@@ -67,7 +76,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
-    this.postService.getPosts(this.currentPage, this.pageSize);
+    this.postService.getPosts(this.pageSize, this.currentPage);
   }
 
   onLikePost(id: string) {

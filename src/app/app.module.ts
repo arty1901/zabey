@@ -22,7 +22,8 @@ import {
   MatMenuModule,
   MatSidenavModule,
   MatListModule,
-  MatDividerModule
+  MatDividerModule,
+  MatRadioModule
 } from '@angular/material';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
@@ -30,8 +31,10 @@ import { UserComponent } from './account/user.component';
 import {AuthInterceptor} from './auth/auth-interceptor';
 import { UserInfoComponent } from './account/user-info/user-info.component';
 import { UserPostsComponent } from './account/user-posts/user-posts.component';
-import { EditInfoComponent } from './account/edit-info/edit-info.component';
 import { PostPageComponent } from './post/post-page/post-page.component';
+import { SearchComponent } from './search/search.component';
+import { ChipListComponent } from './chip-list/chip-list.component';
+import { DataListComponent } from './data-list/data-list.component';
 
 @NgModule({
   declarations: [
@@ -44,8 +47,10 @@ import { PostPageComponent } from './post/post-page/post-page.component';
     UserComponent,
     UserInfoComponent,
     UserPostsComponent,
-    EditInfoComponent,
-    PostPageComponent
+    PostPageComponent,
+    SearchComponent,
+    ChipListComponent,
+    DataListComponent
   ],
   imports: [
     FormsModule,
@@ -66,7 +71,8 @@ import { PostPageComponent } from './post/post-page/post-page.component';
     MatMenuModule,
     MatSidenavModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    MatRadioModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]

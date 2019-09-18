@@ -1,0 +1,7 @@
+.search-form .mat-form-field {
+  width: 50%;
+}
+
+mat-radio-button {
+  margin-right: 15px;
+}

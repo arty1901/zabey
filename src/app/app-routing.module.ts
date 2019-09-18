@@ -9,6 +9,7 @@ import {UserComponent} from './account/user.component';
 import {UserInfoComponent} from './account/user-info/user-info.component';
 import {UserPostsComponent} from './account/user-posts/user-posts.component';
 import {PostPageComponent} from './post/post-page/post-page.component';
+import {SearchComponent} from './search/search.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/posts', pathMatch: 'full'},
@@ -21,6 +22,7 @@ const routes: Routes = [
       {path: 'info', component: UserInfoComponent},
       {path: 'posts', component: UserPostsComponent},
     ]},
+  {path: 'search', component: SearchComponent},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
 ];

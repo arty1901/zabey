@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ChipModel, PostModel} from '../models/post.model';
 import {Router} from '@angular/router';
-import {pipe, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -10,10 +10,14 @@ import {map} from 'rxjs/operators';
 })
 export class PostService {
 
-  postChanged = new Subject<{posts: PostModel[], postCount: number}>();
-  postUpdate = new Subject<{post: PostModel}>();
+  postChanged = new Subject<{ posts: PostModel[], postCount: number }>();
+  userPostsChanged = new Subject<{posts: any, count: number}>();
+  postUpdate = new Subject<{ post: PostModel }>();
+
   private posts: PostModel[];
   private post: PostModel;
+  private userPosts: any[];
+
   constructor(private http: HttpClient,
               private router: Router) {
   }
@@ -21,7 +25,7 @@ export class PostService {
   getPosts(pageSize: number, currentPage: number) {
     const queryParam = `?pageSize=${pageSize}&page=${currentPage}`;
 
-    return this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:4000/api/posts/' + queryParam)
+    this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:4000/api/posts/' + queryParam)
       .pipe(
         map(postData => {
           return {
@@ -30,10 +34,10 @@ export class PostService {
                 postId: post._id,
                 postTitle: post.postTitle,
                 postAuthor: post.postAuthor,
+                authorId: post.authorId,
                 postTags: post.postTags,
                 postText: post.postText,
                 postDate: post.postDate,
-                postCreator: post.postCreator,
                 postLikeCounter: post.postLikeCounter,
                 postLikedBy: post.postLikedBy,
                 postComments: post.postComments
@@ -45,6 +49,7 @@ export class PostService {
       )
       .subscribe(
         (response) => {
+
           this.posts = response.posts;
           this.postChanged.next({
             posts: [...this.posts],
@@ -55,14 +60,14 @@ export class PostService {
   }
 
   getPost(id: string) {
-    return this.http.get<{
-      _id: string,
+    this.http.get<{
+      objectID: string,
       postTitle: string,
       postAuthor: string,
+      authorId: string,
       postTags: [],
       postText: string,
       postDate: Date,
-      postCreator: string,
       postLikeCounter: number,
       postLikedBy: string[],
       postComments: []
@@ -70,22 +75,50 @@ export class PostService {
       .pipe(
         map(post => {
           return {
-            postId: post._id,
+            postId: post.objectID,
             postTitle: post.postTitle,
             postAuthor: post.postAuthor,
+            authorId: post.authorId,
             postTags: post.postTags,
             postText: post.postText,
             postDate: post.postDate,
-            postCreator: post.postCreator,
             postLikeCounter: post.postLikeCounter,
             postLikedBy: post.postLikedBy,
             postComments: post.postComments
           };
         })
       ).subscribe(post => {
+        console.log('post request', post);
         this.post = post;
         this.postUpdate.next({
           post: this.post
+        });
+      });
+  }
+
+  getUserPosts(pageSize: number, currentPage: number) {
+    const queryParam = `?pageSize=${pageSize}&page=${currentPage}`;
+
+    this.http.get<{ posts: any, count: number }>('http://localhost:4000/api/posts/userPosts' + queryParam)
+      .pipe(
+        map(posts => {
+          return {
+            posts: posts.posts.map(post => {
+              return {
+                postId: post.objectID,
+                postTitle: post.postTitle,
+                postText: post.postText,
+                postDate: post.postDate
+              };
+            }),
+            count: posts.count
+          };
+        })
+      ).subscribe(data => {
+        this.userPosts = data.posts;
+        this.userPostsChanged.next({
+          posts: [...this.userPosts],
+          count: data.count
         });
       });
   }
@@ -98,23 +131,32 @@ export class PostService {
     return this.postUpdate.asObservable();
   }
 
+  getUserPostsListner() {
+    return this.userPostsChanged.asObservable();
+  }
+
   addPost(postTitle: string, postAuthor: string, postTags: ChipModel[], postText: string) {
     const postDate = new Date();
-    const post = { postTitle, postAuthor, postTags, postText, postDate };
+    const post = {postTitle, postAuthor, postTags, postText, postDate};
 
     // Данные об авторе поста будут переданы в хедаре, в токене авторизованного пользователя в auth-interception
-    this.http.post<{message: string}>('http://localhost:4000/api/posts/', post)
+    this.http.post<{ message: string }>('http://localhost:4000/api/posts/', post)
       .subscribe(() => {
         this.router.navigate(['/']);
       });
   }
 
-  updatePost(postId: string, postTitle: string, postAuthor: string, postTags: ChipModel[], postText: string) {
+  updatePost(
+    postId: string,
+    postTitle: string,
+    postTags: ChipModel[],
+    postText: string) {
+
     const id = postId;
     const postDate = new Date();
-    const post = {postId, postTitle, postAuthor, postTags, postText, postDate};
+    const post = {postTitle, postTags, postText, postDate};
 
-    this.http.put('http://localhost:4000/api/posts/edit/' + id, post)
+    this.http.put<{message: string}>('http://localhost:4000/api/posts/edit/' + id, post)
       .subscribe(() => {
         this.router.navigate(['/']);
       });

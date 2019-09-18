@@ -103,7 +103,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     if (this.mode === 'create') {
       this.postService.addPost(this.postTitle.value, postCreator, this.tagsList, this.postText.value);
     } else {
-      this.postService.updatePost(this.post.postId, postCreator, this.postTitle.value, this.tagsList, this.postText.value);
+      this.postService.updatePost(this.post.postId, this.postTitle.value, this.tagsList, this.postText.value);
     }
   }
 

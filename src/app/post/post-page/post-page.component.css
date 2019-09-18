@@ -1,10 +1,5 @@
 .comment {
-  padding: 10px 15px;
-  margin-bottom: 10px;
-}
-
-.comment:last-child {
-  margin-bottom: 0;
+  margin-top: 20px;
 }
 
 .form-container {
@@ -17,4 +12,13 @@ mat-divider {
 
 .mat-form-field {
   width: 60%;
+}
+
+.button-link {
+  height: 34px;
+  margin-left: 15px;
+}
+
+#author-link {
+  color: black;
 }
